@@ -56,7 +56,6 @@ class ActivitieController extends ApiController
                 'pic' => $request->get('pic'),
                 'years_id' => $request->get('years_id')
             ]);
-            echo $activitie;exit;
             return $this->successResponse($activitie, 'Activitie Created', 201);
         } catch (Exception $e) {
             return $this->errorResponse('Cannot be created', 400);

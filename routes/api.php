@@ -20,7 +20,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post("lecturer/login", 'LecturerController@login');
+Route::post("student/login", 'StudentController@login');
+Route::apiResource('activities', 'ActivitieController');
+Route::apiResource('announcement', 'AnnouncementController');
+Route::apiResource('forums', 'ForumController');
 Route::apiResource('lecturer', 'LecturerController');
-Route::apiResource('years', 'YearController');
 Route::apiResource('roles', 'RoleController');
+Route::apiResource('student', 'StudentController');
+Route::apiResource('years', 'YearController');
 

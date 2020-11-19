@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\role;
+use App\Models\Announcement;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class RoleController extends ApiController
+class AnnouncementController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -17,8 +17,8 @@ class RoleController extends ApiController
     public function index()
     {
         //
-        $role = Role::all();
-        return $this->successResponse($role);
+        $announcement = Announcement::all();
+        return $this->successResponse($announcement);
     }
 
     /**
@@ -41,18 +41,19 @@ class RoleController extends ApiController
     {
         //
         $validator = Validator::make($request->all(), [
-            "name" => "required",
-            "years_id" => "required"
+            "description" => "required"
         ]);
         if ($validator->fails()) {
             return $this->errorResponse($validator->errors(), 422);
         }
         try {
-            $role = Role::create([
-                'name' => $request->get('name'),
+            $announcement = Announcement::create([
+                'date' => $request->get('date'),
+                'description' => $request->get('description'),
+                'students_id' => $request->get('students_id'),
                 'years_id' => $request->get('years_id')
             ]);
-            return $this->successResponse($role, 'Role Created', 201);
+            return $this->successResponse($announcement, 'Announcement Created', 201);
         } catch (Exception $e) {
             return $this->errorResponse('Cannot be created', 400);
         }
@@ -61,7 +62,7 @@ class RoleController extends ApiController
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\role  $role
+     * @param  \App\Models\announcement  $announcement
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -72,10 +73,10 @@ class RoleController extends ApiController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\role  $role
+     * @param  \App\Models\announcement  $announcement
      * @return \Illuminate\Http\Response
      */
-    public function edit(Role $role)
+    public function edit(Announcement $announcement)
     {
         //
     }
@@ -84,25 +85,26 @@ class RoleController extends ApiController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\role  $role
+     * @param  \App\Models\announcement  $announcement
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
         //
         $validator = Validator::make($request->all(), [
-            "name" => "required",
-            "years_id" => "required"
+            "description" => "required"
         ]);
         if ($validator->fails()) {
             return $this->errorResponse($validator->errors(), 422);
         }
         try {
-            $role = Role::findOrFail($id);
-            $role->name = $request->name;
-            $role->years_id = $request->years_id;
-            $role->save();
-            return $this->successResponse($role, 'Role Updated', 201);
+            $announcement = Announcement::findOrFail($id);
+            $announcement->date = $request->date;
+            $announcement->description = $request->description;
+            $announcement->years_id = $request->years_id;
+            $announcement->students_id = $request->students_id;
+            $announcement->save();
+            return $this->successResponse($announcement, 'Announcement Updated', 201);
         } catch (Exception $e) {
             return $this->errorResponse('Cannot be updated', 400);
         }
@@ -111,16 +113,16 @@ class RoleController extends ApiController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\role  $role
+     * @param  \App\Models\announcement  $announcement
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         //
         try {
-            $role = Role::findOrFail($id);
-            $role->delete();
-            return $this->successResponse(null, 'Role Deleted');
+            $announcement = Announcement::findOrFail($id);
+            $announcement->delete();
+            return $this->successResponse(null, 'Announcement Deleted');
         } catch (Exception $e) {
             return $this->errorResponse('Cannot be updated', 400);
         }

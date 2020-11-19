@@ -53,7 +53,6 @@ class ForumController extends ApiController
                 'description' => $request->get('description'),
                 'years_id' => $request->get('years_id')
             ]);
-            echo $forum;exit;
             return $this->successResponse($forum, 'Forum Created', 201);
         } catch (Exception $e) {
             return $this->errorResponse('Cannot be created', 400);
