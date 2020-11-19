@@ -22,4 +22,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post("lecturer/login", 'LecturerController@login');
 Route::apiResource('lecturer', 'LecturerController');
 Route::apiResource('years', 'YearController');
+Route::apiResource('roles', 'RoleController');
 

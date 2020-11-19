@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLecturersTable extends Migration
+class CreateForumsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,13 @@ class CreateLecturersTable extends Migration
      */
     public function up()
     {
-        Schema::create('lecturers', function (Blueprint $table) {
+        Schema::create('forums', function (Blueprint $table) {
             $table->id();
-            $table->string("nip",255)->unique();
             $table->string("name",255);
-            $table->string("password",255);
-            $table->string("email",255);
-            $table->smallInteger("status");
-            $table->string("gender",45);
-            $table->string("jabatan",255);
+            $table->date("date");
+            $table->longText("description");
+            $table->bigInteger('years_id')->unsigned();
+            $table->foreign('years_id')->references('id')->on('years')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -33,6 +31,6 @@ class CreateLecturersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('lecturers');
+        Schema::dropIfExists('forums');
     }
 }

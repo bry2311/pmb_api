@@ -5,17 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Lecturer extends Model
+class Forum extends Model
 {
     use HasFactory;
-
     protected $fillable = [
-        'nip',
         'name',
-        'email',
-        'status',
-        'gender',
-        'jabatan',
-        'password',
+        'date',
+        'description',
+        'years_id',
     ];
 }

@@ -57,7 +57,7 @@ class LecturerController extends ApiController
                 'password' => md5($request->get('password')),
                 'email' => $request->get('email'),
                 'status' => $request->get('status'),
-                'genre' => $request->get('genre'),
+                'gender' => $request->get('gender'),
                 'jabatan' => $request->get('jabatan'),
             ]);
             return $this->successResponse($lecturer, 'Lecturer Created', 201);
@@ -72,9 +72,15 @@ class LecturerController extends ApiController
      * @param  \App\Models\Lecturer  $lecturer
      * @return \Illuminate\Http\Response
      */
-    public function show(Lecturer $lecturer)
+    public function show($id)
     {
         //
+        try {
+            $lecturer = Lecturer::findOrFail($id);
+            return $this->successResponse($lecturer, 'Lecturer Updated', 201);
+        } catch (Exception $e) {
+            return $this->errorResponse('Cannot be found', 400);
+        }
     }
 
     /**
@@ -99,14 +105,13 @@ class LecturerController extends ApiController
     {
         //
         $validator = Validator::make($request->all(), [
-            "nip" => "required|unique:posts",
+            "nip" => "required",
             "name" => "required",
             "email" => "regex:/^.+@.+$/i",
         ]);
         if ($validator->fails()) {
             return $this->errorResponse($validator->errors(), 422);
         }
-
         try {
             $lecturer = Lecturer::findOrFail($id);
             $lecturer->nip = $request->nip;
@@ -114,7 +119,7 @@ class LecturerController extends ApiController
             $lecturer->password = md5($request->password);
             $lecturer->email = $request->email;
             $lecturer->status = $request->status;
-            $lecturer->genre = $request->genre;
+            $lecturer->gender = $request->gender;
             $lecturer->jabatan = $request->jabatan;
             $lecturer->save();
             return $this->successResponse($lecturer, 'Lecturer Updated', 201);
