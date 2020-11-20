@@ -6,6 +6,7 @@ use App\Models\Announcement;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class AnnouncementController extends ApiController
 {
@@ -17,7 +18,12 @@ class AnnouncementController extends ApiController
     public function index()
     {
         //
-        $announcement = Announcement::all();
+        // $announcement = Announcement::all();
+        $announcement = DB::table('announcements')
+        ->join('students', 'announcements.students_id', '=', 'students.id')
+        ->join('years', 'announcements.years_id', '=', 'years.id')
+        ->select('announcements.*','students.name as student_name','years.name as year_name')
+        ->get();
         return $this->successResponse($announcement);
     }
 
@@ -46,13 +52,21 @@ class AnnouncementController extends ApiController
         if ($validator->fails()) {
             return $this->errorResponse($validator->errors(), 422);
         }
-        try {
+        $years = DB::table('years')
+                ->where('years.status','=',1)
+                ->first();
+            $yearId = null;
+            if($years != null){
+                $yearId = $years->id;
+            }
             $announcement = Announcement::create([
                 'date' => $request->get('date'),
                 'description' => $request->get('description'),
                 'students_id' => $request->get('students_id'),
-                'years_id' => $request->get('years_id')
+                'years_id' =>  $yearId
             ]);
+        try {
+
             return $this->successResponse($announcement, 'Announcement Created', 201);
         } catch (Exception $e) {
             return $this->errorResponse('Cannot be created', 400);
@@ -97,11 +111,18 @@ class AnnouncementController extends ApiController
         if ($validator->fails()) {
             return $this->errorResponse($validator->errors(), 422);
         }
+        $years = DB::table('years')
+            ->where('years.status','=',1)
+            ->first();
+        $yearId = null;
+        if($years != null){
+            $yearId = $years->id;
+        }
         try {
             $announcement = Announcement::findOrFail($id);
             $announcement->date = $request->date;
             $announcement->description = $request->description;
-            $announcement->years_id = $request->years_id;
+            $announcement->years_id = $yearId;
             $announcement->students_id = $request->students_id;
             $announcement->save();
             return $this->successResponse($announcement, 'Announcement Updated', 201);

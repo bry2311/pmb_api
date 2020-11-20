@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
+use App\Models\Role_has_student;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class RoleController extends ApiController
+class RoleHasStudentController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -17,8 +17,8 @@ class RoleController extends ApiController
     public function index()
     {
         //
-        $role = Role::all();
-        return $this->successResponse($role);
+        $roleHasStudent = RoleHasStudent::all();
+        return $this->successResponse($roleHasStudent);
     }
 
     /**
@@ -41,18 +41,20 @@ class RoleController extends ApiController
     {
         //
         $validator = Validator::make($request->all(), [
-            "name" => "required",
-            "years_id" => "required"
+            "roles_id" => "required",
+            "users_id" => "required",
+            "years_id" => "required",
         ]);
         if ($validator->fails()) {
             return $this->errorResponse($validator->errors(), 422);
         }
         try {
-            $role = Role::create([
-                'name' => $request->get('name'),
-                'years_id' => $request->get('years_id')
+            $roleHasStudent = RoleHasStudent::create([
+                'roles_id' => $request->get('roles_id'),
+                'users_id' => $request->get('users_id'),
+                'years_id' => $request->get('years_id'),
             ]);
-            return $this->successResponse($role, 'Role Created', 201);
+            return $this->successResponse($roleHasStudent, 'RoleHasStudent Created', 201);
         } catch (Exception $e) {
             return $this->errorResponse('Cannot be created', 400);
         }
@@ -61,10 +63,10 @@ class RoleController extends ApiController
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\role  $role
+     * @param  \App\Models\roleHasStudent  $roleHasStudent
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(roleHasStudent $roleHasStudent)
     {
         //
     }
@@ -72,10 +74,10 @@ class RoleController extends ApiController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\role  $role
+     * @param  \App\Models\roleHasStudent  $roleHasStudent
      * @return \Illuminate\Http\Response
      */
-    public function edit(Role $role)
+    public function edit(roleHasStudent $roleHasStudent)
     {
         //
     }
@@ -84,25 +86,27 @@ class RoleController extends ApiController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\role  $role
+     * @param  \App\Models\roleHasStudent  $roleHasStudent
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, roleHasStudent $roleHasStudent)
     {
         //
         $validator = Validator::make($request->all(), [
-            "name" => "required",
-            "years_id" => "required"
+            "roles_id" => "required",
+            "users_id" => "required",
+            "years_id" => "required",
         ]);
         if ($validator->fails()) {
             return $this->errorResponse($validator->errors(), 422);
         }
         try {
-            $role = Role::findOrFail($id);
-            $role->name = $request->name;
-            $role->years_id = $request->years_id;
-            $role->save();
-            return $this->successResponse($role, 'Role Updated', 201);
+            $roleHasStudent = RoleHasStudent::findOrFail($id);
+            $roleHasStudent->roles_id = $request->roles_id;
+            $roleHasStudent->users_id = $request->users_id;
+            $roleHasStudent->years_id = $request->years_id;
+            $roleHasStudent->save();
+            return $this->successResponse($roleHasStudent, 'RoleHasStudent Updated', 201);
         } catch (Exception $e) {
             return $this->errorResponse('Cannot be updated', 400);
         }
@@ -111,16 +115,16 @@ class RoleController extends ApiController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\role  $role
+     * @param  \App\Models\roleHasStudent  $roleHasStudent
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(roleHasStudent $roleHasStudent)
     {
         //
         try {
-            $role = Role::findOrFail($id);
-            $role->delete();
-            return $this->successResponse(null, 'Role Deleted');
+            $roleHasStudent = RoleHasStudent::findOrFail($id);
+            $roleHasStudent->delete();
+            return $this->successResponse(null, 'RoleHasStudent Deleted');
         } catch (Exception $e) {
             return $this->errorResponse('Cannot be updated', 400);
         }

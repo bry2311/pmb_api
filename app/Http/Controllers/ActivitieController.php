@@ -46,6 +46,15 @@ class ActivitieController extends ApiController
         if ($validator->fails()) {
             return $this->errorResponse($validator->errors(), 422);
         }
+        $activitie = Activitie::create([
+            'date' => $request->get('date'),
+            'start' => $request->get('start'),
+            'end' => $request->get('end'),
+            'description' => $request->get('description'),
+            'place' => $request->get('place'),
+            'pic' => $request->get('pic'),
+            'years_id' => $request->get('years_id')
+        ]);
         try {
             $activitie = Activitie::create([
                 'date' => $request->get('date'),

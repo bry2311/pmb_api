@@ -20,8 +20,6 @@ class CreateStudentsTable extends Migration
             $table->string("password",255);
             $table->string("email",255);
             $table->string("gender",45);
-            $table->bigInteger('years_id')->unsigned();
-            $table->foreign('years_id')->references('id')->on('years')->onDelete('cascade');
             $table->timestamps();
         });
     }

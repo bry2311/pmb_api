@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\forum;
+use App\Models\Forum;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
