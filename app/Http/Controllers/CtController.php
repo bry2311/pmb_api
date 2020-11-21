@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Forum;
+use App\Models\Ct;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
-class ForumController extends ApiController
+class CtController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -18,8 +18,8 @@ class ForumController extends ApiController
     public function index()
     {
         //
-        $forum = Forum::all();
-        return $this->successResponse($forum);
+        $ct = Ct::all();
+        return $this->successResponse($ct);
     }
 
     /**
@@ -55,13 +55,16 @@ class ForumController extends ApiController
             if($years != null){
                 $yearId = $years->id;
             }
-            $forum = Forum::create([
+            $ct = Ct::create([
                 'name' => $request->get('name'),
-                'date' => $request->get('date'),
                 'description' => $request->get('description'),
+                'date' => $request->get('date'),
+                'start' => $request->get('start'),
+                'end' => $request->get('end'),
+                'duration' => $request->get('duration'),
                 'years_id' => $yearId
             ]);
-            return $this->successResponse($forum, 'Forum Created', 201);
+            return $this->successResponse($ct, 'Ct Created', 201);
         } catch (Exception $e) {
             return $this->errorResponse('Cannot be created', 400);
         }
@@ -70,10 +73,10 @@ class ForumController extends ApiController
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\forum  $forum
+     * @param  \App\Models\ct  $ct
      * @return \Illuminate\Http\Response
      */
-    public function show(forum $forum)
+    public function show(ct $ct)
     {
         //
     }
@@ -81,10 +84,10 @@ class ForumController extends ApiController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\forum  $forum
+     * @param  \App\Models\ct  $ct
      * @return \Illuminate\Http\Response
      */
-    public function edit(forum $forum)
+    public function edit(ct $ct)
     {
         //
     }
@@ -93,7 +96,7 @@ class ForumController extends ApiController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\forum  $forum
+     * @param  \App\Models\ct  $ct
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -106,12 +109,15 @@ class ForumController extends ApiController
             return $this->errorResponse($validator->errors(), 422);
         }
         try {
-            $forum = Forum::findOrFail($id);
-            $forum->name = $request->name;
-            $forum->date = $request->date;
-            $forum->description = $request->description;
-            $forum->save();
-            return $this->successResponse($forum, 'Forum Updated', 201);
+            $ct = Ct::findOrFail($id);
+            $ct->name = $request->name;
+            $ct->description = $request->description;
+            $ct->date = $request->date;
+            $ct->start = $request->start;
+            $ct->end = $request->end;
+            $ct->duration = $request->duration;
+            $ct->save();
+            return $this->successResponse($ct, 'Ct Updated', 201);
         } catch (Exception $e) {
             return $this->errorResponse('Cannot be updated', 400);
         }
@@ -120,16 +126,16 @@ class ForumController extends ApiController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\forum  $forum
+     * @param  \App\Models\ct  $ct
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         //
         try {
-            $forum = Forum::findOrFail($id);
-            $forum->delete();
-            return $this->successResponse(null, 'Forum Deleted');
+            $ct = Ct::findOrFail($id);
+            $ct->delete();
+            return $this->successResponse(null, 'Ct Deleted');
         } catch (Exception $e) {
             return $this->errorResponse('Cannot be updated', 400);
         }

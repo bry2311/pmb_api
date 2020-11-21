@@ -52,9 +52,10 @@ class AnnouncementController extends ApiController
         if ($validator->fails()) {
             return $this->errorResponse($validator->errors(), 422);
         }
-        $years = DB::table('years')
-                ->where('years.status','=',1)
-                ->first();
+        try {
+            $years = DB::table('years')
+            ->where('years.status','=',1)
+            ->first();
             $yearId = null;
             if($years != null){
                 $yearId = $years->id;
@@ -65,8 +66,6 @@ class AnnouncementController extends ApiController
                 'students_id' => $request->get('students_id'),
                 'years_id' =>  $yearId
             ]);
-        try {
-
             return $this->successResponse($announcement, 'Announcement Created', 201);
         } catch (Exception $e) {
             return $this->errorResponse('Cannot be created', 400);

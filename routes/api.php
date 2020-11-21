@@ -22,10 +22,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post("lecturer/login", 'LecturerController@login');
 Route::post("student/login", 'StudentController@login');
 Route::apiResource('activities', 'ActivitieController');
-Route::apiResource('announcement', 'AnnouncementController');
+Route::apiResource('announcements', 'AnnouncementController');
 Route::apiResource('forums', 'ForumController');
-Route::apiResource('lecturer', 'LecturerController');
+Route::apiResource('lecturers', 'LecturerController');
 Route::apiResource('roles', 'RoleController');
-Route::apiResource('student', 'StudentController');
+Route::apiResource('students', 'StudentController');
 Route::apiResource('years', 'YearController');
+Route::apiResource('cts', 'CtController');
 
