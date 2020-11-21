@@ -29,4 +29,6 @@ Route::apiResource('roles', 'RoleController');
 Route::apiResource('students', 'StudentController');
 Route::apiResource('years', 'YearController');
 Route::apiResource('cts', 'CtController');
+Route::apiResource('soalPgs', 'SoalPgController');
+Route::apiResource('soalIsians', 'SoalIsianController');
 
