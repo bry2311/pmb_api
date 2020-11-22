@@ -118,7 +118,7 @@ class RoleHasStudentController extends ApiController
      * @param  \App\Models\roleHasStudent  $roleHasStudent
      * @return \Illuminate\Http\Response
      */
-    public function destroy(roleHasStudent $roleHasStudent)
+    public function destroy($id)
     {
         //
         try {

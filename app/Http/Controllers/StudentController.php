@@ -24,6 +24,7 @@ class StudentController extends ApiController
         ->join('students', 'role_has_students.students_id', '=', 'students.id')
         ->join('roles', 'role_has_students.roles_id', '=', 'roles.id')
         ->join('years', 'role_has_students.years_id', '=', 'years.id')
+        ->where('years.status','=',1)
         ->select('students.*','roles.name as roles_name','years.name as years_name')
         ->get();
         return $this->successResponse($students);
