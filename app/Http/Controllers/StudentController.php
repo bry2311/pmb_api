@@ -23,7 +23,8 @@ class StudentController extends ApiController
         $students = DB::table('role_has_students')
         ->join('students', 'role_has_students.students_id', '=', 'students.id')
         ->join('roles', 'role_has_students.roles_id', '=', 'roles.id')
-        ->select('students.*','roles.name as roles_name')
+        ->join('years', 'role_has_students.years_id', '=', 'years.id')
+        ->select('students.*','roles.name as roles_name','years.name as years_name')
         ->get();
         return $this->successResponse($students);
     }
@@ -177,6 +178,43 @@ class StudentController extends ApiController
             }
         } catch (Exception $e) {
             return $this->errorResponse('Something has been wrong.', 400);
+        }
+    }
+
+    public function addPanitia(Request $request)
+    {
+        //
+        $validator = Validator::make($request->all(), [
+            "nrp" => "required|unique:students",
+            "name" => "required",
+            "email" => "regex:/^.+@.+$/i",
+        ]);
+        if ($validator->fails()) {
+            return $this->errorResponse($validator->errors(), 422);
+        }
+        try {
+            $student = Student::create([
+                'nrp' => $request->get('nrp'),
+                'name' => $request->get('name'),
+                'password' => md5($request->get('password')),
+                'email' => $request->get('email'),
+                'gender' => $request->get('gender'),
+            ]);
+            $years = DB::table('years')
+            ->where('years.status','=',1)
+            ->first();
+            $yearId = null;
+            if($years != null){
+                $yearId = $years->id;
+            }
+            $RoleStudent = Role_has_student::create([
+                'roles_id' => 2,
+                'students_id' => $student->id,
+                'years_id' => $yearId,
+            ]);
+            return $this->successResponse($student, 'Student Created', 201);
+        } catch (Exception $e) {
+            return $this->errorResponse('Cannot be created', 400);
         }
     }
 }
