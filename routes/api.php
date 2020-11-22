@@ -22,6 +22,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post("lecturers/login", 'LecturerController@login');
 Route::post("students/login", 'StudentController@login');
 Route::post("students/addPanitia", 'StudentController@addPanitia');
+Route::get("students/getPanitia", 'StudentController@getPanitia');
+Route::get("students/getMahasiswa", 'StudentController@getMahasiswa');
 Route::apiResource('activities', 'ActivitieController');
 Route::apiResource('announcements', 'AnnouncementController');
 Route::apiResource('forums', 'ForumController');
