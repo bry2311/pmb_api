@@ -17,7 +17,7 @@ class RoleHasStudentController extends ApiController
     public function index()
     {
         //
-        $roleHasStudent = RoleHasStudent::all();
+        $roleHasStudent = Role_has_student::all();
         return $this->successResponse($roleHasStudent);
     }
 
@@ -42,16 +42,16 @@ class RoleHasStudentController extends ApiController
         //
         $validator = Validator::make($request->all(), [
             "roles_id" => "required",
-            "users_id" => "required",
+            "students_id" => "required",
             "years_id" => "required",
         ]);
         if ($validator->fails()) {
             return $this->errorResponse($validator->errors(), 422);
         }
         try {
-            $roleHasStudent = RoleHasStudent::create([
+            $roleHasStudent = Role_has_student::create([
                 'roles_id' => $request->get('roles_id'),
-                'users_id' => $request->get('users_id'),
+                'students_id' => $request->get('students_id'),
                 'years_id' => $request->get('years_id'),
             ]);
             return $this->successResponse($roleHasStudent, 'RoleHasStudent Created', 201);
@@ -66,7 +66,7 @@ class RoleHasStudentController extends ApiController
      * @param  \App\Models\roleHasStudent  $roleHasStudent
      * @return \Illuminate\Http\Response
      */
-    public function show(roleHasStudent $roleHasStudent)
+    public function show(Role_has_student $roleHasStudent)
     {
         //
     }
@@ -77,7 +77,7 @@ class RoleHasStudentController extends ApiController
      * @param  \App\Models\roleHasStudent  $roleHasStudent
      * @return \Illuminate\Http\Response
      */
-    public function edit(roleHasStudent $roleHasStudent)
+    public function edit(Role_has_student $roleHasStudent)
     {
         //
     }
@@ -89,21 +89,21 @@ class RoleHasStudentController extends ApiController
      * @param  \App\Models\roleHasStudent  $roleHasStudent
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, roleHasStudent $roleHasStudent)
+    public function update(Request $request, $id)
     {
         //
         $validator = Validator::make($request->all(), [
             "roles_id" => "required",
-            "users_id" => "required",
+            "students_id" => "required",
             "years_id" => "required",
         ]);
         if ($validator->fails()) {
             return $this->errorResponse($validator->errors(), 422);
         }
         try {
-            $roleHasStudent = RoleHasStudent::findOrFail($id);
+            $roleHasStudent = Role_has_student::findOrFail($id);
             $roleHasStudent->roles_id = $request->roles_id;
-            $roleHasStudent->users_id = $request->users_id;
+            $roleHasStudent->students_id = $request->students_id;
             $roleHasStudent->years_id = $request->years_id;
             $roleHasStudent->save();
             return $this->successResponse($roleHasStudent, 'RoleHasStudent Updated', 201);
@@ -122,7 +122,7 @@ class RoleHasStudentController extends ApiController
     {
         //
         try {
-            $roleHasStudent = RoleHasStudent::findOrFail($id);
+            $roleHasStudent = Role_has_student::findOrFail($id);
             $roleHasStudent->delete();
             return $this->successResponse(null, 'RoleHasStudent Deleted');
         } catch (Exception $e) {

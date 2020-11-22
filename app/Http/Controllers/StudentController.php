@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
+use App\Models\Role_has_student;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -18,8 +19,13 @@ class StudentController extends ApiController
     public function index()
     {
         //
-        $student = Student::all();
-        return $this->successResponse($student);
+        // $student = Student::all();
+        $students = DB::table('role_has_students')
+        ->join('students', 'role_has_students.students_id', '=', 'students.id')
+        ->join('roles', 'role_has_students.roles_id', '=', 'roles.id')
+        ->select('students.*','roles.name as roles_name')
+        ->get();
+        return $this->successResponse($students);
     }
 
     /**
@@ -56,6 +62,18 @@ class StudentController extends ApiController
                 'password' => md5($request->get('password')),
                 'email' => $request->get('email'),
                 'gender' => $request->get('gender'),
+            ]);
+            $years = DB::table('years')
+            ->where('years.status','=',1)
+            ->first();
+            $yearId = null;
+            if($years != null){
+                $yearId = $years->id;
+            }
+            $RoleStudent = Role_has_student::create([
+                'roles_id' => 1,
+                'students_id' => $student->id,
+                'years_id' => $yearId,
             ]);
             return $this->successResponse($student, 'Student Created', 201);
         } catch (Exception $e) {
