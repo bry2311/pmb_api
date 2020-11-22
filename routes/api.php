@@ -19,8 +19,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post("lecturer/login", 'LecturerController@login');
-Route::post("student/login", 'StudentController@login');
+Route::post("lecturers/login", 'LecturerController@login');
+Route::post("students/login", 'StudentController@login');
 Route::apiResource('activities', 'ActivitieController');
 Route::apiResource('announcements', 'AnnouncementController');
 Route::apiResource('forums', 'ForumController');

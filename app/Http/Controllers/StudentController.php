@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
-class StudentController extends Controller
+class StudentController extends ApiController
 {
     /**
      * Display a listing of the resource.
