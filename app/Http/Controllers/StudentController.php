@@ -56,7 +56,6 @@ class StudentController extends ApiController
                 'password' => md5($request->get('password')),
                 'email' => $request->get('email'),
                 'gender' => $request->get('gender'),
-                'years_id' => $request->get('years_id'),
             ]);
             return $this->successResponse($student, 'Student Created', 201);
         } catch (Exception $e) {
@@ -117,7 +116,6 @@ class StudentController extends ApiController
             $student->password = md5($request->password);
             $student->email = $request->email;
             $student->gender = $request->gender;
-            $student->years_id = $request->years_id;
             $student->save();
             return $this->successResponse($student, 'Student Updated', 201);
         } catch (Exception $e) {
