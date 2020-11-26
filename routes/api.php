@@ -24,6 +24,7 @@ Route::post("students/login", 'StudentController@login');
 Route::post("students/addPanitia", 'StudentController@addPanitia');
 Route::get("students/getPanitia", 'StudentController@getPanitia');
 Route::get("students/getMahasiswa", 'StudentController@getMahasiswa');
+Route::get("comments/getAllCommentByIdForum/{id}", 'CommentController@getAllCommentByIdForum');
 Route::apiResource('activities', 'ActivitieController');
 Route::apiResource('announcements', 'AnnouncementController');
 Route::apiResource('forums', 'ForumController');
@@ -35,4 +36,5 @@ Route::apiResource('years', 'YearController');
 Route::apiResource('cts', 'CtController');
 Route::apiResource('soalPgs', 'SoalPgController');
 Route::apiResource('soalIsians', 'SoalIsianController');
+Route::apiResource('comments', 'CommentController');
 

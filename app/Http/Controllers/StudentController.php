@@ -166,14 +166,25 @@ class StudentController extends ApiController
         $post = $request->all();
         $nrp = $post['nrp'];
         $password = $post['password'];
+        $students = DB::table('role_has_students')
+            ->join('students', 'role_has_students.students_id', '=', 'students.id')
+            ->join('roles', 'role_has_students.roles_id', '=', 'roles.id')
+            ->join('years', 'role_has_students.years_id', '=', 'years.id')
+            ->where('students.nrp', '=', $nrp)
+            ->where('students.password', '=', md5($password))
+            ->select('students.*','roles.name as roles_name','years.name as years_name')
+            ->get();
         try {
-            $student = DB::table('students')
-                ->select('students.*')
+            $students = DB::table('role_has_students')
+                ->join('students', 'role_has_students.students_id', '=', 'students.id')
+                ->join('roles', 'role_has_students.roles_id', '=', 'roles.id')
+                ->join('years', 'role_has_students.years_id', '=', 'years.id')
                 ->where('students.nrp', '=', $nrp)
                 ->where('students.password', '=', md5($password))
+                ->select('students.*','roles.name as roles_name','years.name as years_name')
                 ->get();
-            if(count($student) != 0){
-                return $this->successResponse($student);
+            if(count($students) != 0){
+                return $this->successResponse($students);
             }else {
                 return $this->errorResponse('Cannot find the user.', 400);
             }
