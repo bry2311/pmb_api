@@ -45,6 +45,13 @@ class RoleHasStudentController extends ApiController
             "students_id" => "required",
             "years_id" => "required",
         ]);
+        $years = DB::table('years')
+            ->where('years.status','=',1)
+            ->first();
+            $yearId = null;
+        if($years != null){
+            $yearId = $years->id;
+        }
         if ($validator->fails()) {
             return $this->errorResponse($validator->errors(), 422);
         }
@@ -52,7 +59,7 @@ class RoleHasStudentController extends ApiController
             $roleHasStudent = Role_has_student::create([
                 'roles_id' => $request->get('roles_id'),
                 'students_id' => $request->get('students_id'),
-                'years_id' => $request->get('years_id'),
+                'years_id' => $yearId,
             ]);
             return $this->successResponse($roleHasStudent, 'RoleHasStudent Created', 201);
         } catch (Exception $e) {
