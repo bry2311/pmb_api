@@ -132,4 +132,13 @@ class SoalIsianController extends ApiController
             return $this->errorResponse('Cannot be updated', 400);
         }
     }
+
+    public function getAllSoalIsianByIdCT($id)
+    {
+        $soalIsian = DB::table('soal_isians')
+        ->where('cts_id','=',$id)
+        ->select('soal_isians.*')
+        ->get();
+        return $this->successResponse($soalIsian);
+    }
 }
