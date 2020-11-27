@@ -142,4 +142,14 @@ class SoalPgController extends ApiController
             return $this->errorResponse('Cannot be updated', 400);
         }
     }
+
+    public function getAllSoalPgByIdCts($id)
+    {
+        $soalPg = DB::table('soal_pgs')
+        ->join('cts', 'soal_pgs.cts_id', '=', 'soal_pgs.id')
+        ->where('soal_pgs.cts_id','=',$id)
+        ->select('soal_pgs.*','cts.name as ct_name')
+        ->get();
+        return $this->successResponse($soalPg);
+    }
 }
