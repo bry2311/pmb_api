@@ -143,7 +143,6 @@ class SoalPgController extends ApiController
         }
     }
 
-<<<<<<< HEAD
     public function getAllSoalPgByIdCts($id)
     {
         $soalPg = DB::table('soal_pgs')
@@ -153,16 +152,4 @@ class SoalPgController extends ApiController
         ->get();
         return $this->successResponse($soalPg);
     }
-=======
-    
-    public function getAllSoalPgsByIdCT($id)
-    {
-        $soalPg = DB::table('soal_pgs')
-        ->where('cts_id','=',$id)
-        ->select('soal_pgs.*')
-        ->get();
-        return $this->successResponse($soalPg);
-    }
-}
->>>>>>> 348c0b6b695af0af2d6111161f061d2b6a9ae492
 }
