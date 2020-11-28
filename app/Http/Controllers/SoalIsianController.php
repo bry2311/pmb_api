@@ -141,4 +141,3 @@ class SoalIsianController extends ApiController
         ->get();
         return $this->successResponse($soalIsian);
     }
-}

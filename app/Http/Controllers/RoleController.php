@@ -6,6 +6,7 @@ use App\Models\Role;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class RoleController extends ApiController
 {
@@ -41,16 +42,24 @@ class RoleController extends ApiController
     {
         //
         $validator = Validator::make($request->all(), [
-            "name" => "required",
-            "years_id" => "required"
+            "name" => "required"
         ]);
         if ($validator->fails()) {
             return $this->errorResponse($validator->errors(), 422);
         }
         try {
+            
+            $years = DB::table('years')
+            ->where('years.status','=',1)
+            ->first();
+            $yearId = null;
+            if($years != null){
+                $yearId = $years->id;
+            }
+
             $role = Role::create([
                 'name' => $request->get('name'),
-                'years_id' => $request->get('years_id')
+                'years_id' => $yearId
             ]);
             return $this->successResponse($role, 'Role Created', 201);
         } catch (Exception $e) {
@@ -91,16 +100,24 @@ class RoleController extends ApiController
     {
         //
         $validator = Validator::make($request->all(), [
-            "name" => "required",
-            "years_id" => "required"
+            "name" => "required"
         ]);
         if ($validator->fails()) {
             return $this->errorResponse($validator->errors(), 422);
         }
         try {
+            
+            $years = DB::table('years')
+            ->where('years.status','=',1)
+            ->first();
+            $yearId = null;
+            if($years != null){
+                $yearId = $years->id;
+            }
+
             $role = Role::findOrFail($id);
             $role->name = $request->name;
-            $role->years_id = $request->years_id;
+            $role->years_id = $yearId;
             $role->save();
             return $this->successResponse($role, 'Role Updated', 201);
         } catch (Exception $e) {

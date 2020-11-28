@@ -116,7 +116,9 @@ class LecturerController extends ApiController
             $lecturer = Lecturer::findOrFail($id);
             $lecturer->nip = $request->nip;
             $lecturer->name = $request->name;
-            $lecturer->password = md5($request->password);
+            if($request->password != -1){
+                $lecturer->password = md5($request->password);
+            }
             $lecturer->email = $request->email;
             $lecturer->status = $request->status;
             $lecturer->gender = $request->gender;
