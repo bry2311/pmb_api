@@ -26,7 +26,7 @@ Route::get("students/getPanitia", 'StudentController@getPanitia');
 Route::get("students/getMahasiswa", 'StudentController@getMahasiswa');
 Route::get("comments/getAllCommentByIdForum/{id}", 'CommentController@getAllCommentByIdForum');
 Route::get("soalIsians/getAllSoalIsianByIdCT/{id}", 'SoalIsianController@getAllSoalIsianByIdCT');
-Route::get("soalPgs/getAllSoalPgsByIdCT/{id}", 'SoalPgController@getAllSoalPgsByIdCT');
+Route::get("soalPgs/getAllSoalPgsByIdCT/{id}", 'SoalPgController@getAllSoalPgByIdCts');
 Route::apiResource('activities', 'ActivitieController');
 Route::apiResource('announcements', 'AnnouncementController');
 Route::apiResource('forums', 'ForumController');

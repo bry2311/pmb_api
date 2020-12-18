@@ -146,10 +146,20 @@ class SoalPgController extends ApiController
     public function getAllSoalPgByIdCts($id)
     {
         $soalPg = DB::table('soal_pgs')
-        ->join('cts', 'soal_pgs.cts_id', '=', 'soal_pgs.id')
+        ->join('cts', 'soal_pgs.cts_id', '=', 'cts.id')
         ->where('soal_pgs.cts_id','=',$id)
         ->select('soal_pgs.*','cts.name as ct_name')
         ->get();
-        return $this->successResponse($soalPg);
+        $tmpArray = [];
+        $tmpArray = $soalPg->toArray();
+        if(count($tmpArray) != null){
+            for($i=0; $i<count($tmpArray);$i++){
+                // array_push($tmpArray[$i], ["jawaban_user" => ""]);
+                $tmpArray[$i]->jawaban_user = "";
+                $tmpArray[$i]->user_id = "";
+            }
+        }
+        // var_dump($soalPg);exit;
+        return $this->successResponse($tmpArray);
     }
 }
