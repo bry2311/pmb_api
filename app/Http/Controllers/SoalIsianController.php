@@ -133,11 +133,44 @@ class SoalIsianController extends ApiController
         }
     }
 
-    public function getAllSoalIsianByIdCT($id)
+    public function getAllSoalIsianByIdCT($id,$userid)
     {
         $soalIsian = DB::table('soal_isians')
         ->where('cts_id','=',$id)
         ->select('soal_isians.*')
         ->get();
-        return $this->successResponse($soalIsian);
+        $jawabanUser = DB::table('jawaban_user_isians')
+        ->join('cts', 'jawaban_user_isians.cts_id', '=', 'cts.id')
+        ->where([
+            ['jawaban_user_isians.cts_id','=',$id],
+            ['jawaban_user_isians.students_id','=',$userid]
+            ])
+        ->get();
+        $tmpArray = [];
+        $tmpArray = $soalIsian->toArray();
+        if(count($tmpArray) != null){
+            for($i=0; $i<count($tmpArray);$i++){
+                $cek = false;
+                $userid = "";
+                $answer = "";
+                foreach($jawabanUser as $ju){
+                    if($ju->number == $tmpArray[$i]->number){
+                        $cek = true;
+                        $userid = $ju->students_id;
+                        $answer = $ju->answer;
+                    } 
+                }
+                if($cek == true){
+                    $tmpArray[$i]->jawaban_user = $answer;
+                    $tmpArray[$i]->user_id = $userid;
+                } else{
+                    $tmpArray[$i]->jawaban_user = "";
+                    $tmpArray[$i]->user_id = "";
+                }
+                // array_push($tmpArray[$i], ["jawaban_user" => ""]);
+            }
+        }
+        // var_dump($soalPg);exit;
+        return $this->successResponse($tmpArray);
     }
+}

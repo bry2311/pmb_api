@@ -143,23 +143,73 @@ class SoalPgController extends ApiController
         }
     }
 
-    public function getAllSoalPgByIdCts($id)
+    public function getAllSoalPgByIdCts($id,$userid)
     {
         $soalPg = DB::table('soal_pgs')
         ->join('cts', 'soal_pgs.cts_id', '=', 'cts.id')
         ->where('soal_pgs.cts_id','=',$id)
         ->select('soal_pgs.*','cts.name as ct_name')
         ->get();
+        $jawabanUser = DB::table('jawaban_user_pgs')
+        ->join('cts', 'jawaban_user_pgs.cts_id', '=', 'cts.id')
+        ->where([
+            ['jawaban_user_pgs.cts_id','=',$id],
+            ['jawaban_user_pgs.students_id','=',$userid]
+            ])
+        ->get();
         $tmpArray = [];
         $tmpArray = $soalPg->toArray();
         if(count($tmpArray) != null){
             for($i=0; $i<count($tmpArray);$i++){
+                $cek = false;
+                $userid = "";
+                $answer = "";
+                foreach($jawabanUser as $ju){
+                    if($ju->number == $tmpArray[$i]->number){
+                        $cek = true;
+                        $userid = $ju->students_id;
+                        $answer = $ju->answer;
+                    } 
+                }
+                if($cek == true){
+                    $tmpArray[$i]->jawaban_user = $answer;
+                    $tmpArray[$i]->user_id = $userid;
+                } else{
+                    $tmpArray[$i]->jawaban_user = "";
+                    $tmpArray[$i]->user_id = "";
+                }
                 // array_push($tmpArray[$i], ["jawaban_user" => ""]);
-                $tmpArray[$i]->jawaban_user = "";
-                $tmpArray[$i]->user_id = "";
             }
         }
         // var_dump($soalPg);exit;
         return $this->successResponse($tmpArray);
+    }
+
+    public function storeAnswerIsian(Request $request)
+    {
+        $tmpArray = $request->jawaban->toArray();
+        for($i=0; $i<count($tmpArray);$i++){
+            $jawabanisian = JawabanUserIsian::create([
+                'answer'=>$tmpArray[$i]->jawaban,
+                'cts_id'=>$tmpArray[$i]->cts_id,
+                'students_id'=>$tmpArray[$i]->user_id,
+                'number'=>$tmpArray[$i]->number
+            ]);
+
+        }
+    }
+
+    public function storeAnswerPG(Request $request)
+    {
+        $tmpArray = $request->jawaban->toArray();
+        for($i=0; $i<count($tmpArray);$i++){
+            $jawabanpg = JawabanUserPg::create([
+                'answer'=>$tmpArray[$i]->jawaban,
+                'cts_id'=>$tmpArray[$i]->cts_id,
+                'students_id'=>$tmpArray[$i]->user_id,
+                'number'=>$tmpArray[$i]->number
+            ]);
+
+        }
     }
 }
