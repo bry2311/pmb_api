@@ -48,7 +48,6 @@ class StudentController extends ApiController
      */
     public function store(Request $request)
     {
-        //
         $validator = Validator::make($request->all(), [
             "nrp" => "required|unique:students",
             "name" => "required",

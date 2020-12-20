@@ -10,6 +10,7 @@ class JawabanUserPg extends Model
     use HasFactory;
     protected $fillable = [
         'answer',
+        'number',
         'correctness',
         'cts_id',
         'students_id',

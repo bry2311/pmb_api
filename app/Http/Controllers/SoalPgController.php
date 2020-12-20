@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\SoalPg;
+use App\Models\JawabanUserPg;
+use App\Models\JawabanUserIsian;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -169,7 +171,7 @@ class SoalPgController extends ApiController
                         $cek = true;
                         $userid = $ju->students_id;
                         $answer = $ju->answer;
-                    } 
+                    }
                 }
                 if($cek == true){
                     $tmpArray[$i]->jawaban_user = $answer;
@@ -187,9 +189,77 @@ class SoalPgController extends ApiController
 
     public function storeAnswerIsian(Request $request)
     {
-        $tmpArray = $request->jawaban->toArray();
+        // var_dump($request->all());exit;
+
+        $tmpArray = $request->all();
+
         for($i=0; $i<count($tmpArray);$i++){
-            $jawabanisian = JawabanUserIsian::create([
+            $jawabanpg = JawabanUserIsian::create([
+                'answer'=>$tmpArray[$i]['jawaban'],
+                'cts_id'=>$tmpArray[$i]['cts_id'],
+                'students_id'=>$tmpArray[$i]['user_id'],
+                'number'=>$tmpArray[$i]['number']
+            ]);
+
+        }
+    }
+
+    public function storeAnswerPG(Request $request)
+    {
+        // return var_dump($request->all());
+
+        // var_dump($request->all());exit;
+        $tmpArray = json_encode($request);
+        var_dump($tmpArray);exit;
+
+        for($i=0; $i<count($tmpArray);$i++){
+            $jawabanpg = JawabanUserPg::create([
+                'answer'=>$tmpArray[$i]['jawaban'],
+                'cts_id'=>$tmpArray[$i]['cts_id'],
+                'students_id'=>$tmpArray[$i]['user_id'],
+                'number'=>$tmpArray[$i]['number']
+            ]);
+
+        }
+    }
+
+    public function storeAnswerPGGet($jwb)
+    {
+        // return var_dump($request->all());
+
+        // var_dump($jwb);exit;
+        $tmpArray = json_decode($jwb);
+        // var_dump($tmpArray);exit;
+        for($i=0; $i<count($tmpArray);$i++){
+            if($tmpArray[$i]->jawaban == $tmpArray[$i]->key){
+                $jawabanpg = JawabanUserPg::create([
+                    'answer'=>$tmpArray[$i]->jawaban,
+                    'cts_id'=>$tmpArray[$i]->cts_id,
+                    'correctness'=>1,
+                    'students_id'=>$tmpArray[$i]->user_id,
+                    'number'=>$tmpArray[$i]->number
+                ]);
+            }else{
+                $jawabanpg = JawabanUserPg::create([
+                    'answer'=>$tmpArray[$i]->jawaban,
+                    'cts_id'=>$tmpArray[$i]->cts_id,
+                    'correctness'=>0,
+                    'students_id'=>$tmpArray[$i]->user_id,
+                    'number'=>$tmpArray[$i]->number
+                ]);
+            }
+        }
+    }
+
+    public function storeAnswerIsianGet($jwb)
+    {
+        // var_dump($request->all());exit;
+        // var_dump(json_decode($jwb));exit;
+
+        $tmpArray = json_decode($jwb);
+
+        for($i=0; $i<count($tmpArray);$i++){
+            $jawabanpg = JawabanUserIsian::create([
                 'answer'=>$tmpArray[$i]->jawaban,
                 'cts_id'=>$tmpArray[$i]->cts_id,
                 'students_id'=>$tmpArray[$i]->user_id,
@@ -199,17 +269,23 @@ class SoalPgController extends ApiController
         }
     }
 
-    public function storeAnswerPG(Request $request)
+    public function getScorePG($id,$userid)
     {
-        $tmpArray = $request->jawaban->toArray();
-        for($i=0; $i<count($tmpArray);$i++){
-            $jawabanpg = JawabanUserPg::create([
-                'answer'=>$tmpArray[$i]->jawaban,
-                'cts_id'=>$tmpArray[$i]->cts_id,
-                'students_id'=>$tmpArray[$i]->user_id,
-                'number'=>$tmpArray[$i]->number
-            ]);
 
+        $jawabanUser = DB::table('jawaban_user_pgs')
+        ->join('cts', 'jawaban_user_pgs.cts_id', '=', 'cts.id')
+        ->where([
+            ['jawaban_user_pgs.cts_id','=',$id],
+            ['jawaban_user_pgs.students_id','=',$userid]
+            ])
+        ->get();
+
+        $totalbenar = 0;
+        foreach($jawabanUser as $j){
+            if($j == 1){
+                $totalbenar += 1;
+            }
         }
+        return $this->successResponse($tmpArray);
     }
 }

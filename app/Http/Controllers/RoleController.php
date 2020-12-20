@@ -48,7 +48,7 @@ class RoleController extends ApiController
             return $this->errorResponse($validator->errors(), 422);
         }
         try {
-            
+
             $years = DB::table('years')
             ->where('years.status','=',1)
             ->first();
@@ -106,7 +106,7 @@ class RoleController extends ApiController
             return $this->errorResponse($validator->errors(), 422);
         }
         try {
-            
+
             $years = DB::table('years')
             ->where('years.status','=',1)
             ->first();
