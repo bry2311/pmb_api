@@ -282,10 +282,10 @@ class SoalPgController extends ApiController
 
         $totalbenar = 0;
         foreach($jawabanUser as $j){
-            if($j == 1){
+            if($j->correctness == 1){
                 $totalbenar += 1;
             }
         }
-        return $this->successResponse($tmpArray);
+        return $this->successResponse($totalbenar);
     }
 }

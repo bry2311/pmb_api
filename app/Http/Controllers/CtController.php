@@ -140,4 +140,45 @@ class CtController extends ApiController
             return $this->errorResponse('Cannot be updated', 400);
         }
     }
+
+    //sementara sebelum ganti db abis testing user aja
+    public function getCtsByUser($userid)
+    {
+        $years = DB::table('years')
+        ->where('years.status','=',1)
+        ->first();
+        $yearId = null;
+        if($years != null){
+            $yearId = $years->id;
+        }
+
+        $dataCT = DB::table('cts')
+        ->where('cts.years_id','=',$yearId)
+        ->select()
+        ->get();
+        
+        $tmpArray = [];
+        $i = 0;
+        foreach($dataCT as $ct){
+            $jawabanUserPG = DB::table('jawaban_user_pgs')
+            ->where([
+                ['jawaban_user_pgs.cts_id','=',$id],
+                ['jawaban_user_pgs.students_id','=',$userid]
+                ])
+            ->get();
+            $jawabanUserIsian = DB::table('jawaban_user_isians')
+            ->where([
+                ['jawaban_user_isians.cts_id','=',$id],
+                ['jawaban_user_isians.students_id','=',$userid]
+                ])
+            ->get();
+            // kalo user tsb ga ada data pernah ngerjain cts ini, tampilkan
+            if(count($jawabanUserPG) > 0 && count($jawabanUserIsian) > 0){
+                $tmpArray[$i] = $ct;
+                $i++;
+            }
+        }
+        return $this->successResponse($tmpArray);
+    }
+
 }

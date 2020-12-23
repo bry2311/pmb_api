@@ -27,6 +27,7 @@ Route::get("students/getMahasiswa", 'StudentController@getMahasiswa');
 Route::get("comments/getAllCommentByIdForum/{id}", 'CommentController@getAllCommentByIdForum');
 Route::get("soalIsians/getAllSoalIsianByIdCT/{id}/{userid}", 'SoalIsianController@getAllSoalIsianByIdCT');
 Route::get("soalPgs/getAllSoalPgsByIdCT/{id}/{userid}", 'SoalPgController@getAllSoalPgByIdCts');
+Route::get("cts/getCtsByUser/{userid}", 'CtController@getCtsByUser');
 Route::get("soalPgs/storeAnswerPGGet/{jwb}", 'SoalPgController@storeAnswerPGGet');
 Route::get("soalPgs/storeAnswerIsianGet/{jwb}", 'SoalPgController@storeAnswerIsianGet');
 Route::get("soalPgs/getScorePG/{id}/{userid}", 'SoalPgController@getScorePG');
