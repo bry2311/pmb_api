@@ -129,13 +129,23 @@ class StudentController extends ApiController
             return $this->errorResponse($validator->errors(), 422);
         }
         try {
-            $student = Student::findOrFail($id);
-            $student->nrp = $request->nrp;
-            $student->name = $request->name;
-            $student->password = md5($request->password);
-            $student->email = $request->email;
-            $student->gender = $request->gender;
-            $student->save();
+            if($request->last_password == $request->password){
+                $student = Student::findOrFail($id);
+                $student->nrp = $request->nrp;
+                $student->name = $request->name;
+                // $student->password = md5($request->password);
+                $student->email = $request->email;
+                $student->gender = $request->gender;
+                $student->save();
+            } else{
+                $student = Student::findOrFail($id);
+                $student->nrp = $request->nrp;
+                $student->name = $request->name;
+                $student->password = md5($request->password);
+                $student->email = $request->email;
+                $student->gender = $request->gender;
+                $student->save();
+            }
             return $this->successResponse($student, 'Student Updated', 201);
         } catch (Exception $e) {
             return $this->errorResponse('Cannot be updated', 400);

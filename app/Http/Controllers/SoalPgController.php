@@ -145,20 +145,21 @@ class SoalPgController extends ApiController
         }
     }
 
-    public function getAllSoalPgByIdCts($id,$userid)
+    public function getAllSoalPgByIdCts($id,$userId)
     {
+        
         $soalPg = DB::table('soal_pgs')
         ->join('cts', 'soal_pgs.cts_id', '=', 'cts.id')
         ->where('soal_pgs.cts_id','=',$id)
         ->select('soal_pgs.*','cts.name as ct_name')
         ->get();
-        $jawabanUser = DB::table('jawaban_user_pgs')
-        ->join('cts', 'jawaban_user_pgs.cts_id', '=', 'cts.id')
-        ->where([
-            ['jawaban_user_pgs.cts_id','=',$id],
-            ['jawaban_user_pgs.students_id','=',$userid]
-            ])
-        ->get();
+        // $jawabanUser = DB::table('jawaban_user_pgs')
+        // ->join('cts', 'jawaban_user_pgs.cts_id', '=', 'cts.id')
+        // ->where([
+        //     ['jawaban_user_pgs.cts_id','=',$id],
+        //     ['jawaban_user_pgs.students_id','=',$userId]
+        //     ])
+        // ->get();
         $tmpArray = [];
         $tmpArray = $soalPg->toArray();
         if(count($tmpArray) != null){
@@ -166,24 +167,25 @@ class SoalPgController extends ApiController
                 $cek = false;
                 $userid = "";
                 $answer = "";
-                foreach($jawabanUser as $ju){
-                    if($ju->number == $tmpArray[$i]->number){
-                        $cek = true;
-                        $userid = $ju->students_id;
-                        $answer = $ju->answer;
-                    }
-                }
-                if($cek == true){
-                    $tmpArray[$i]->jawaban_user = $answer;
-                    $tmpArray[$i]->user_id = $userid;
-                } else{
-                    $tmpArray[$i]->jawaban_user = "";
-                    $tmpArray[$i]->user_id = "";
-                }
+                // foreach($jawabanUser as $ju){
+                //     if($ju->number == $tmpArray[$i]->number){
+                //         $cek = true;
+                //         $userid = $ju->students_id;
+                //         $answer = $ju->answer;
+                //     }
+                // }
+                // if($cek == true){
+                //     $tmpArray[$i]->jawaban_user = $answer;
+                //     $tmpArray[$i]->user_id = $userid;
+                // } else{
+                    $tmpArray[$i]->jawaban = "";
+                    $tmpArray[$i]->user_id = $userId;
+                // }
                 // array_push($tmpArray[$i], ["jawaban_user" => ""]);
             }
         }
-        // var_dump($soalPg);exit;
+        
+        // dd($tmpArray);exit;
         return $this->successResponse($tmpArray);
     }
 
@@ -257,7 +259,7 @@ class SoalPgController extends ApiController
         // var_dump(json_decode($jwb));exit;
 
         $tmpArray = json_decode($jwb);
-
+        // dd($jwb);
         for($i=0; $i<count($tmpArray);$i++){
             $jawabanpg = JawabanUserIsian::create([
                 'answer'=>$tmpArray[$i]->jawaban,
@@ -271,7 +273,6 @@ class SoalPgController extends ApiController
 
     public function getScorePG($id,$userid)
     {
-
         $jawabanUser = DB::table('jawaban_user_pgs')
         ->join('cts', 'jawaban_user_pgs.cts_id', '=', 'cts.id')
         ->where([

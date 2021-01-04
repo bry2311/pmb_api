@@ -143,7 +143,7 @@ class CommentController extends ApiController
         $comment = DB::table('comments')
         ->join('students', 'comments.students_id', '=', 'students.id')
         ->join('years', 'comments.years_id', '=', 'years.id')
-        ->join('forums', 'forums.years_id', '=', 'years.id')
+        ->join('forums', 'comments.forums_id', '=', 'forums.id')
         ->where('comments.forums_id','=',$id)
         ->select('comments.*','students.name as student_name','years.name as year_name','forums.name as forum_name')
         ->get();

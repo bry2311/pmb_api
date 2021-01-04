@@ -113,17 +113,27 @@ class LecturerController extends ApiController
             return $this->errorResponse($validator->errors(), 422);
         }
         try {
-            $lecturer = Lecturer::findOrFail($id);
-            $lecturer->nip = $request->nip;
-            $lecturer->name = $request->name;
-            if($request->password != -1){
+            if($request->last_password == $request->password){
+                $lecturer = Lecturer::findOrFail($id);
+                $lecturer->nip = $request->nip;
+                $lecturer->name = $request->name;
+                // $lecturer->password = md5($request->password);
+                $lecturer->email = $request->email;
+                $lecturer->status = $request->status;
+                $lecturer->gender = $request->gender;
+                $lecturer->jabatan = $request->jabatan;
+                $lecturer->save();
+            } else{
+                $lecturer = Lecturer::findOrFail($id);
+                $lecturer->nip = $request->nip;
+                $lecturer->name = $request->name;
                 $lecturer->password = md5($request->password);
+                $lecturer->email = $request->email;
+                $lecturer->status = $request->status;
+                $lecturer->gender = $request->gender;
+                $lecturer->jabatan = $request->jabatan;
+                $lecturer->save();
             }
-            $lecturer->email = $request->email;
-            $lecturer->status = $request->status;
-            $lecturer->gender = $request->gender;
-            $lecturer->jabatan = $request->jabatan;
-            $lecturer->save();
             return $this->successResponse($lecturer, 'Lecturer Updated', 201);
         } catch (Exception $e) {
             return $this->errorResponse('Cannot be updated', 400);

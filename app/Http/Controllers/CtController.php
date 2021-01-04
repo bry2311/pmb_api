@@ -162,18 +162,18 @@ class CtController extends ApiController
         foreach($dataCT as $ct){
             $jawabanUserPG = DB::table('jawaban_user_pgs')
             ->where([
-                ['jawaban_user_pgs.cts_id','=',$id],
+                ['jawaban_user_pgs.cts_id','=',$ct->id],
                 ['jawaban_user_pgs.students_id','=',$userid]
                 ])
             ->get();
             $jawabanUserIsian = DB::table('jawaban_user_isians')
             ->where([
-                ['jawaban_user_isians.cts_id','=',$id],
+                ['jawaban_user_isians.cts_id','=',$ct->id],
                 ['jawaban_user_isians.students_id','=',$userid]
                 ])
             ->get();
             // kalo user tsb ga ada data pernah ngerjain cts ini, tampilkan
-            if(count($jawabanUserPG) > 0 && count($jawabanUserIsian) > 0){
+            if(count($jawabanUserPG) == 0 && count($jawabanUserIsian) == 0){
                 $tmpArray[$i] = $ct;
                 $i++;
             }
@@ -181,4 +181,142 @@ class CtController extends ApiController
         return $this->successResponse($tmpArray);
     }
 
+
+    public function getPengerjaanMhsByCT($ct)
+    {
+        $years = DB::table('years')
+        ->where('years.status','=',1)
+        ->first();
+        $yearId = null;
+        if($years != null){
+            $yearId = $years->id;
+        }
+        $tmpArray = [];
+        $jawabanUserPG = DB::table('jawaban_user_pgs')
+        ->join('students', 'jawaban_user_pgs.students_id', '=', 'students.id')
+        ->join('cts', 'jawaban_user_pgs.cts_id', '=', 'cts.id')
+        ->where('jawaban_user_pgs.cts_id','=',$ct)
+        ->groupBy('students.id')
+        ->get(['students.name as name','students.nrp as nrp','jawaban_user_pgs.cts_id as cts_id','cts.name as ctsName']);
+        // kalo ga ad pg cari di isian
+        if(count($jawabanUserPG) > 0){
+            $jawabanUserIsian = DB::table('jawaban_user_isians')
+            ->join('students', 'jawaban_user_isians.students_id', '=', 'students.id')
+            ->join('cts', 'jawaban_user_isians.cts_id', '=', 'cts.id')
+            ->where('jawaban_user_isians.cts_id','=',$ct)
+            ->groupBy('students.id')
+            ->get(['students.name as name','students.nrp as nrp','jawaban_user_isians.cts_id as cts_id','cts.name as ctsName']);
+            $tmpArray = $jawabanUserIsian->toArray();
+        }else{
+            $tmpArray = $jawabanUserPG->toArray();
+        }
+        return $this->successResponse($tmpArray);
+    }
+
+    
+    public function getJawaban($ct)
+    {
+        $years = DB::table('years')
+        ->where('years.status','=',1)
+        ->first();
+        $yearId = null;
+        if($years != null){
+            $yearId = $years->id;
+        }
+        $tmpArray = [];
+        $jawabanUserPG = DB::table('jawaban_user_pgs')
+        ->join('students', 'jawaban_user_pgs.students_id', '=', 'students.id')
+        ->join('cts', 'jawaban_user_pgs.cts_id', '=', 'cts.id')
+        ->where('jawaban_user_pgs.cts_id','=',$ct)
+        ->groupBy('students.id')
+        ->get(['students.name as name','students.nrp as nrp','jawaban_user_pgs.cts_id as cts_id','cts.name as ctsName']);
+        // kalo ga ad pg cari di isian
+        if(count($jawabanUserPG) > 0){
+            $jawabanUserIsian = DB::table('jawaban_user_isians')
+            ->join('students', 'jawaban_user_isians.students_id', '=', 'students.id')
+            ->join('cts', 'jawaban_user_isians.cts_id', '=', 'cts.id')
+            ->where('jawaban_user_isians.cts_id','=',$ct)
+            ->groupBy('students.id')
+            ->get(['students.name as name','students.nrp as nrp','jawaban_user_isians.cts_id as cts_id','cts.name as ctsName']);
+            $tmpArray = $jawabanUserIsian->toArray();
+        }else{
+            $tmpArray = $jawabanUserPG->toArray();
+        }
+        return $this->successResponse($tmpArray);
+    }
+
+    public function getJawabanPerMahasiswaPerCT($ct,$userId)
+    {
+        $years = DB::table('years')
+        ->where('years.status','=',1)
+        ->first();
+        $yearId = null;
+        if($years != null){
+            $yearId = $years->id;
+        }
+
+        //belom beres
+        $tmpArray = [];
+        $tmpArray2 = [];
+        $tmpArray3 = [];
+        
+        $jawabanUserPG = DB::table('cts')
+        ->join('jawaban_user_pgs', 'cts.id', '=', 'jawaban_user_pgs.cts_id')
+        ->leftJoin('soal_pgs', 'cts.id', '=', 'soal_pgs.cts_id')
+        ->join('students', 'jawaban_user_pgs.students_id', '=', 'students.id')
+        ->where([
+            ['jawaban_user_pgs.cts_id','=',$ct],
+            ['jawaban_user_pgs.students_id','=',$userId]])
+        ->get();
+
+        // $jawabanUserPG = DB::table('jawaban_user_pgs')
+        // ->join('students', 'jawaban_user_pgs.students_id', '=', 'students.id')
+        // ->join('cts', 'jawaban_user_pgs.cts_id', '=', 'cts.id')
+        // ->join('soal_pgs', 'soal_pgs.cts_id', '=', 'cts.id')
+        // ->where([
+        //     ['jawaban_user_pgs.cts_id','=',$ct],
+        //     ['jawaban_user_pgs.students_id','=',$userId]])
+        // ->get(['students.name as name','students.nrp as nrp','jawaban_user_pgs.cts_id as cts_id','cts.name as ctsName','soal_pgs.key as key','soal_pgs.question as question','jawaban_user_pgs.answer as answer','jawaban_user_pgs.correctness as correctness']);
+        $jawabanUserIsian = DB::table('jawaban_user_isians')
+        ->join('students', 'jawaban_user_isians.students_id', '=', 'students.id')
+        ->join('cts', 'jawaban_user_isians.cts_id', '=', 'cts.id')
+        ->join('soal_isians', 'cts.id', '=', 'soal_isians.cts_id')
+        ->where([
+            ['jawaban_user_isians.cts_id','=',$ct],
+            ['jawaban_user_isians.students_id','=',$userId]])
+        ->get(['students.name as name','students.nrp as nrp','jawaban_user_isians.cts_id as cts_id','cts.name as ctsName','soal_isians.question as question','jawaban_user_isians.answer as answer']);
+
+        if(count($jawabanUserPG) > 0 && count($jawabanUserIsian) > 0){
+            // kalau gabungan 22 nya ada
+            $tmpArray = $jawabanUserPG->toArray();
+            for($i=0; $i<count($tmpArray);$i++){
+                $tmpArray[$i]->jenis = "pilihan ganda";
+            }
+            $tmpArray2 = $jawabanUserIsian->toArray();
+            for($i=0; $i<count($tmpArray2);$i++){
+                $tmpArray2[$i]->jenis = "isian";
+                $tmpArray2[$i]->correctness = "isian";
+                $tmpArray2[$i]->key = "-";
+            }
+            $tmpArray3 = array_merge($tmpArray,$tmpArray2);
+        }else if(count($jawabanUserIsian) > 0 && count($jawabanUserPG) == 0){
+            // kalo isian doang yang ada
+            $tmpArray = $jawabanUserIsian->toArray();
+            for($i=0; $i<count($tmpArray2);$i++){
+                $tmpArray2[$i]->jenis = "isian";
+                $tmpArray2[$i]->correctness = "isian";
+                $tmpArray2[$i]->key = "-";
+            }
+            $tmpArray3 = $tmpArray;
+        }else if(count($jawabanUserIsian) == 0 && count($jawabanUserPG) > 0){
+            // kalo pg doang yg ada
+            $tmpArray = $jawabanUserPG->toArray();
+            for($i=0; $i<count($tmpArray);$i++){
+                $tmpArray[$i]->jenis = "pilihan ganda";
+            }
+            $tmpArray3 = $tmpArray;
+        }
+        dd($jawabanUserPG);
+        return $this->successResponse($tmpArray);
+    }
 }
