@@ -260,13 +260,20 @@ class CtController extends ApiController
         $tmpArray2 = [];
         $tmpArray3 = [];
         
+        // $jawabanUserPG = DB::table('cts')
+        // ->join('jawaban_user_pgs', 'cts.id', '=', 'jawaban_user_pgs.cts_id')
+        // ->join('soal_pgs', 'cts.id', '=', 'soal_pgs.cts_id')
+        // ->join('students', 'jawaban_user_pgs.students_id', '=', 'students.id')
+        // ->where([
+        //     ['cts.id','=',$ct],
+        //     ['students.id','=',$userId]])
+        // ->get();
+
         $jawabanUserPG = DB::table('cts')
         ->join('jawaban_user_pgs', 'cts.id', '=', 'jawaban_user_pgs.cts_id')
-        ->leftJoin('soal_pgs', 'cts.id', '=', 'soal_pgs.cts_id')
         ->join('students', 'jawaban_user_pgs.students_id', '=', 'students.id')
-        ->where([
-            ['jawaban_user_pgs.cts_id','=',$ct],
-            ['jawaban_user_pgs.students_id','=',$userId]])
+        ->where('jawaban_user_pgs.cts_id','=',$ct)
+        ->where('jawaban_user_pgs.students_id','=',$userId)
         ->get();
 
         // $jawabanUserPG = DB::table('jawaban_user_pgs')
@@ -316,7 +323,7 @@ class CtController extends ApiController
             }
             $tmpArray3 = $tmpArray;
         }
-        dd($jawabanUserPG);
+        // dd($jawabanUserPG);
         return $this->successResponse($tmpArray);
     }
 }
