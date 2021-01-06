@@ -269,32 +269,35 @@ class CtController extends ApiController
         //     ['students.id','=',$userId]])
         // ->get();
 
-        $jawabanUserPG = DB::table('cts')
-        ->join('jawaban_user_pgs', 'cts.id', '=', 'jawaban_user_pgs.cts_id')
-        ->join('students', 'jawaban_user_pgs.students_id', '=', 'students.id')
-        ->where('jawaban_user_pgs.cts_id','=',$ct)
-        ->where('jawaban_user_pgs.students_id','=',$userId)
-        ->get();
-
-        // $jawabanUserPG = DB::table('jawaban_user_pgs')
-        // ->join('students', 'jawaban_user_pgs.students_id', '=', 'students.id')
-        // ->join('cts', 'jawaban_user_pgs.cts_id', '=', 'cts.id')
+        // $jawabanUserPG = DB::table('cts')
         // ->join('soal_pgs', 'soal_pgs.cts_id', '=', 'cts.id')
-        // ->where([
-        //     ['jawaban_user_pgs.cts_id','=',$ct],
-        //     ['jawaban_user_pgs.students_id','=',$userId]])
-        // ->get(['students.name as name','students.nrp as nrp','jawaban_user_pgs.cts_id as cts_id','cts.name as ctsName','soal_pgs.key as key','soal_pgs.question as question','jawaban_user_pgs.answer as answer','jawaban_user_pgs.correctness as correctness']);
+        // ->join('jawaban_user_pgs', 'cts.id', '=', 'jawaban_user_pgs.cts_id')
+        // ->join('students', 'jawaban_user_pgs.students_id', '=', 'students.id')
+        // ->where('jawaban_user_pgs.cts_id','=',$ct)
+        // ->where('jawaban_user_pgs.students_id','=',$userId)
+        // ->get();
+
+        $jawabanUserPG = DB::table('jawaban_user_pgs')
+        ->join('students', 'jawaban_user_pgs.students_id', '=', 'students.id')
+        ->join('cts', 'jawaban_user_pgs.cts_id', '=', 'cts.id')
+        ->join('soal_pgs', 'jawaban_user_pgs.id_soal', '=', 'soal_pgs.id')
+        ->where([
+            ['jawaban_user_pgs.cts_id','=',$ct],
+            ['jawaban_user_pgs.students_id','=',$userId]])
+        ->get(['students.name as name','students.nrp as nrp','jawaban_user_pgs.cts_id as cts_id','cts.name as ctsName','soal_pgs.key as key','soal_pgs.question as question','jawaban_user_pgs.answer as answer','jawaban_user_pgs.correctness as correctness','soal_pgs.number as no_soal']);
+        
         $jawabanUserIsian = DB::table('jawaban_user_isians')
         ->join('students', 'jawaban_user_isians.students_id', '=', 'students.id')
         ->join('cts', 'jawaban_user_isians.cts_id', '=', 'cts.id')
-        ->join('soal_isians', 'cts.id', '=', 'soal_isians.cts_id')
+        ->join('soal_isians', 'jawaban_user_isians.id_soal', '=', 'soal_isians.id')
         ->where([
             ['jawaban_user_isians.cts_id','=',$ct],
             ['jawaban_user_isians.students_id','=',$userId]])
-        ->get(['students.name as name','students.nrp as nrp','jawaban_user_isians.cts_id as cts_id','cts.name as ctsName','soal_isians.question as question','jawaban_user_isians.answer as answer']);
+        ->get(['students.name as name','students.nrp as nrp','jawaban_user_isians.cts_id as cts_id','cts.name as ctsName','soal_isians.question as question','jawaban_user_isians.answer as answer','soal_isians.number as no_soal']);
 
         if(count($jawabanUserPG) > 0 && count($jawabanUserIsian) > 0){
             // kalau gabungan 22 nya ada
+
             $tmpArray = $jawabanUserPG->toArray();
             for($i=0; $i<count($tmpArray);$i++){
                 $tmpArray[$i]->jenis = "pilihan ganda";
@@ -323,7 +326,7 @@ class CtController extends ApiController
             }
             $tmpArray3 = $tmpArray;
         }
-        // dd($jawabanUserPG);
-        return $this->successResponse($tmpArray);
+        dd($tmpArray3);
+        return $this->successResponse($tmpArray3);
     }
 }
